@@ -1,0 +1,129 @@
+erDiagram
+    assisted_people {
+        INT id "Identificador único da pessoa atendida"
+        VARCHAR name "Nome completo da pessoa"
+        DATE birth_date "Data de aniversário da pessoa"
+        VARCHAR phone "Número de telefone da pessoa"
+        VARCHAR street "Rua, avenida, etc. da pessoa"
+        VARCHAR number "Número da residência"
+        VARCHAR neighborhood "Bairro da pessoa"
+        VARCHAR city "Cidade da pessoa"
+        VARCHAR state "Estado da pessoa"
+        VARCHAR zip_code "CEP da pessoa"
+        VARCHAR email "E-mail da pessoa"
+        VARCHAR document "Número de RG ou CPF da pessoa"
+        ENUM marital_status "Situação familiar da pessoa"
+        INT children_count "Número de filhos da pessoa"
+        DECIMAL family_income "Renda familiar da pessoa"
+        ENUM education_level "Escolaridade da pessoa"
+        ENUM employment_status "Situação de emprego da pessoa"
+        ENUM housing_type "Tipo de moradia da pessoa"
+        VARCHAR document_hash "UUID de documentos anexados no bucket"
+        VARCHAR photo_hash "UUID de foto da pessoa"
+        TEXT description "Descrição de informações importantes da pessoa"
+    }
+
+    support_histories {
+        INT id "Identificador único do atendimento"
+        INT assisted_people_id "ID da pessoa atendida (FK de assisted_people)"
+        INT partnership_id "ID do parceiro responsável (FK de partnerships)"
+        INT case_record_id "ID do caso registrado (FK de case_records)"
+        VARCHAR status "Status do atendimento (Encaminhado, Em andamento, Finalizado, Evadido)"
+        VARCHAR document_hash "UUID de documentos anexados no bucket"
+        TEXT description "Descrição de dados do atendimento"
+        DATE referral_date "Data de encaminhamento"
+        DATE completion_date "Data de finalização"
+        DATE support_date "Data do atendimento"
+    }
+
+    partnerships {
+        INT id "Identificador único do parceiro"
+        VARCHAR name "Nome do parceiro"
+        VARCHAR phone "Telefone do parceiro"
+        VARCHAR email "Email do parceiro"
+        VARCHAR document "Número de CNPJ/CPF do parceiro"
+        ENUM partnership_type "Tipo de parceria (doações, atendimento jurídico, apoio psicológico, etc.)"
+    }
+
+    case_records {
+        INT id "Identificador único do caso"
+        DATE occurrence_date "Data da ocorrência"
+        VARCHAR location "Localização da ocorrência"
+        ENUM aggressor_type "Tipo de agressor (conhecido/desconhecido)"
+        ENUM violence_type "Tipo de violência (Física, Psicológica, Patrimonial, Sexual, Moral, Outro)"
+        BOOLEAN femicide_risk "Indicador de risco de feminicídio (true/false)"
+        ENUM risk_signs "Sinais de risco (Histórico de agressão, Ameaças de morte, Outro)"
+        VARCHAR protocol_number "Número do protocolo"
+        INT agency_id "ID do órgão acionado (FK de agencies)"
+        INT assisted_people_id "ID da pessoa atendida (FK de assisted_people)"
+    }
+
+    agencies {
+        INT id "Identificador único do órgão"
+        VARCHAR name "Nome do órgão"
+        VARCHAR description "Descrição do órgão"
+
+    }
+
+    partnership_histories {
+        INT id "Identificador único do histórico de parceria"
+        INT partnership_id "ID do parceiro (FK de partnerships)"
+        DATE action_date "Data da ação"
+        VARCHAR actions "Ações realizadas"
+        TEXT results "Resultados obtidos"
+    }
+
+        donors {
+        INT id "Identificador único do doador"
+        VARCHAR name "Nome do doador"
+        VARCHAR document "Documento do doador (CPF/CNPJ)"
+        ENUM type "Tipo de doador (Pessoa Física, Pessoa Jurídica)"
+        VARCHAR phone "Telefone do doador"
+        VARCHAR email "E-mail do doador"
+        VARCHAR responsible_name "Nome do responsável (se pessoa jurídica)"
+    }
+
+    donation_types {
+        INT id "Identificador único do tipo de doação"
+        ENUM type "Tipo de doação (Financeira, Alimentos, Roupas, Itens de Higiene, Outros)"
+        VARCHAR description "Descrição do tipo de doação"
+    }
+
+    financial_donations {
+        INT id "Identificador único da doação financeira"
+        INT donor_id "ID do doador (FK de donors)"
+        INT donation_type_id "ID do tipo de doação (FK de donation_types)"
+        DECIMAL amount "Valor da doação"
+        DATE receipt_date "Data de recebimento"
+        DATE donation_date "Data da doação"
+    }
+
+    product_donations {
+        INT id "Identificador único da doação de produtos"
+        INT donor_id "ID do doador (FK de donors)"
+        INT donation_type_id "ID do tipo de doação (FK de donation_types)"
+        INT quantity "Quantidade doada"
+        VARCHAR item "Item doado"
+        TEXT description "Descrição do item"
+        DATE receipt_date "Data de recebimento"
+        INT assisted_people_id "ID da pessoa atendida (FK de assisted_people)"
+        DATE donation_date "Data da doação"
+    }
+
+
+
+
+
+
+    assisted_people ||--o| support_histories: "1:N"
+    partnerships ||--o| support_histories: "1:N"
+    agencies ||--o| case_records: "1:N"
+    support_histories ||--o| case_records: "1:N"
+    partnerships ||--o| partnership_histories: "1:N"
+    donors ||--o| financial_donations: "1:N"
+    donors ||--o| product_donations: "1:N"
+    donation_types ||--o| financial_donations: "1:N"
+    donation_types ||--o| product_donations: "1:N"
+    assisted_people ||--o| product_donations: "1:N"
+
+

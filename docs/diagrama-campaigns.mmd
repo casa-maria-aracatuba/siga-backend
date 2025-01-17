@@ -1,0 +1,41 @@
+erDiagram
+    campaigns {
+        INT id "Identificador único da campanha"
+        VARCHAR name "Nome da campanha"
+        TEXT objective "Objetivo da campanha"
+        TEXT target_audience "Público-alvo da campanha"
+        DATE start_date "Data de início da campanha"
+        DATE end_date "Data de término da campanha"
+    }
+
+    campaign_plans {
+        INT id "Identificador único do planejamento"
+        INT campaign_id "ID da campanha (FK de campaigns)"
+        TEXT stages "Etapas do planejamento"
+        VARCHAR responsible "Responsáveis pelas etapas"
+        DATE start_date "Data de início do planejamento"
+        DATE end_date "Data de término do planejamento"
+        TEXT schedule "Cronograma do planejamento"
+    }
+
+    campaign_materials {
+        INT id "Identificador único do material"
+        INT campaign_id "ID da campanha (FK de campaigns)"
+        VARCHAR material_type "Tipo de material (Gráfico, Texto, Vídeo, etc.)"
+        TEXT description "Descrição do material"
+        VARCHAR file_url "URL do arquivo do material (se aplicável)"
+        DATE upload_date "Data de envio do material"
+    }
+
+    campaign_results {
+        INT id "Identificador único do resultado"
+        INT campaign_id "ID da campanha (FK de campaigns)"
+        INT people_reached "Número de pessoas alcançadas"
+        DECIMAL resources_raised "Recursos arrecadados"
+        TEXT impact_generated "Impacto gerado pela campanha"
+        DATE result_date "Data da avaliação dos resultados"
+    }
+
+    campaigns ||--o| campaign_plans: "1:N"
+    campaigns ||--o| campaign_materials: "1:N"
+    campaigns ||--o| campaign_results: "1:N"

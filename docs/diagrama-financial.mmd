@@ -1,0 +1,8 @@
+    financial_utilizations {
+        INT id "Identificador único da utilização financeira"
+        ENUM account "Conta utilizada (Caixa, Conta Bancária)"
+        BIGINT value "Valor utilizado"
+        VARCHAR usage_type "Tipo de utilização (Ex: pagamento, compra, etc.)"
+        TEXT description "Descrição da utilização"
+        DATE resource_outflow_date "Data da saída do recurso"
+    }
