@@ -1,0 +1,21 @@
+erDiagram
+    users {
+        INT id "Identificador único do usuário"
+        VARCHAR name "Nome do usuário"
+        VARCHAR email "E-mail do usuário"
+        VARCHAR password_hash "Hash da senha do usuário"
+        ENUM role "Papel do usuário (admin, assistente, parceiro, etc.)"
+        BOOLEAN is_active "Se o usuário está ativo no sistema"
+        TIMESTAMP created_at "Data de criação do usuário"
+        TIMESTAMP updated_at "Última atualização do usuário"
+    }
+
+    login_sessions {
+        INT id "Identificador único da sessão de login"
+        INT user_id "ID do usuário (FK de users)"
+        VARCHAR token "Token de autenticação"
+        TIMESTAMP created_at "Data e hora do login"
+        TIMESTAMP expires_at "Data e hora de expiração da sessão"
+    }
+
+    users ||--o{ login_sessions: "1:N"

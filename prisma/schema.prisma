@@ -1,0 +1,151 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Int      @default(1) // 1 = USER, 2 = ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AssistedPeople {
+  id               Int                @id @default(autoincrement())
+  name             String
+  birthDate        DateTime
+  phone            String
+  street           String
+  number           String
+  neighborhood     String
+  city             String
+  state            String
+  zipCode          String
+  email            String
+  document         String
+  maritalStatus    String
+  childrenCount    Int
+  familyIncome     Float
+  educationLevel   String
+  employmentStatus String
+  housingType      String
+  documentHash     String
+  photoHash        String
+  description      String
+  supportHistories SupportHistories[]
+  productDonations ProductDonations[]
+
+  CaseRecord CaseRecords[]
+}
+
+model SupportHistories {
+  id               Int            @id @default(autoincrement())
+  assistedPeopleId Int
+  partnershipId    Int
+  caseRecordId     Int
+  status           String
+  documentHash     String
+  description      String
+  referralDate     DateTime
+  completionDate   DateTime?
+  supportDate      DateTime
+  assistedPeople   AssistedPeople @relation(fields: [assistedPeopleId], references: [id])
+  partnership      Partnerships   @relation(fields: [partnershipId], references: [id])
+  caseRecord       CaseRecords    @relation(fields: [caseRecordId], references: [id])
+}
+
+model Partnerships {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  phone                String
+  email                String
+  document             String
+  partnershipType      String
+  supportHistories     SupportHistories[]
+  partnershipHistories PartnershipHistories[]
+}
+
+model CaseRecords {
+  id               Int                @id @default(autoincrement())
+  occurrenceDate   DateTime
+  location         String
+  aggressorType    String
+  violenceType     String
+  femicideRisk     Boolean
+  riskSigns        String
+  protocolNumber   String
+  agencyId         Int
+  assistedPeopleId Int
+  agency           Agencies           @relation(fields: [agencyId], references: [id])
+  assistedPeople   AssistedPeople     @relation(fields: [assistedPeopleId], references: [id])
+  supportHistories SupportHistories[]
+}
+
+model Agencies {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  caseRecords CaseRecords[]
+}
+
+model PartnershipHistories {
+  id            Int          @id @default(autoincrement())
+  partnershipId Int
+  actionDate    DateTime
+  actions       String
+  results       String
+  partnership   Partnerships @relation(fields: [partnershipId], references: [id])
+}
+
+model Donors {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  document           String
+  type               String
+  phone              String
+  email              String
+  responsibleName    String
+  financialDonations FinancialDonations[]
+  productDonations   ProductDonations[]
+}
+
+model DonationTypes {
+  id                 Int                  @id @default(autoincrement())
+  type               String
+  description        String
+  financialDonations FinancialDonations[]
+  productDonations   ProductDonations[]
+}
+
+model FinancialDonations {
+  id             Int           @id @default(autoincrement())
+  donorId        Int
+  donationTypeId Int
+  amount         Float
+  receiptDate    DateTime
+  donationDate   DateTime
+  donor          Donors        @relation(fields: [donorId], references: [id])
+  donationType   DonationTypes @relation(fields: [donationTypeId], references: [id])
+}
+
+model ProductDonations {
+  id               Int            @id @default(autoincrement())
+  donorId          Int
+  donationTypeId   Int
+  quantity         Int
+  item             String
+  description      String
+  receiptDate      DateTime
+  assistedPeopleId Int
+  donationDate     DateTime
+  donor            Donors         @relation(fields: [donorId], references: [id])
+  donationType     DonationTypes  @relation(fields: [donationTypeId], references: [id])
+  assistedPeople   AssistedPeople @relation(fields: [assistedPeopleId], references: [id])
+}
