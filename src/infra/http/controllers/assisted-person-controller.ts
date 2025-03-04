@@ -7,14 +7,17 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AssistedPersonDto } from '../../../application/dtos/assisted-person-dto';
 import { AssistedPersonService } from '../../../domain/service/assisted-person-service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('assisted-people')
 export class AssistedPersonController {
   constructor(private assistedPeopleService: AssistedPersonService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() createAssistedPersonDto: AssistedPersonDto) {
     return this.assistedPeopleService.create(createAssistedPersonDto);
